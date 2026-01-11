@@ -1,0 +1,10 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><title>Deavil Zombie</title><style>html,body{margin:0;padding:0;background:#000;overflow:hidden}#game{position:relative;width:100vw;height:56.25vw;max-height:100vh;max-width:177.77vh;margin:auto;background:#111;touch-action:none}#player{position:absolute;left:50%;top:50%;width:30px;height:30px;background:#0f0;border-radius:50%;transform:translate(-50%,-50%)}.zombie{position:absolute;width:30px;height:30px;background:#900;border-radius:50%}.hp{position:absolute;top:-6px;left:0;width:100%;height:4px;background:#300}.hp div{height:100%;background:#f00}#hit{position:absolute;inset:0;background:red;opacity:0;pointer-events:none;transition:.2s}</style></head><body><div id="game"><div id="player"></div><div id="hit"></div></div><script>
+const game=document.getElementById("game"),player=document.getElementById("player"),hit=document.getElementById("hit");
+let px=game.clientWidth/2,py=game.clientHeight/2,hp=100;
+function spawn(){const z=document.createElement("div");z.className="zombie";z.hp=30;z.x=Math.random()*game.clientWidth;z.y=Math.random()*game.clientHeight;const bar=document.createElement("div");bar.className="hp";const fill=document.createElement("div");bar.appendChild(fill);z.appendChild(bar);z.fill=fill;game.appendChild(z);zombies.push(z)}
+let zombies=[];setInterval(spawn,1500);
+game.addEventListener("touchstart",e=>{const t=e.touches[0],r=game.getBoundingClientRect();shoot(t.clientX-r.left,t.clientY-r.top)});
+function shoot(x,y){zombies.forEach(z=>{const dx=z.x-x,dy=z.y-y;if(Math.hypot(dx,dy)<40){z.hp-=15;z.fill.style.width=(z.hp/30*100)+"%";if(z.hp<=0){z.remove();zombies=zombies.filter(a=>a!==z)}}})}
+function loop(){zombies.forEach(z=>{const dx=px-z.x,dy=py-z.y,d=Math.hypot(dx,dy);z.x+=dx/d;z.y+=dy/d;z.style.left=z.x+"px";z.style.top=z.y+"px";if(d<25){hp--;hit.style.opacity=.5;setTimeout(()=>hit.style.opacity=0,100);if(hp<=0)alert("GAME OVER")}});requestAnimationFrame(loop)}
+loop();
+</script></body></html>
